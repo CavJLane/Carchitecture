@@ -1,5 +1,5 @@
 import { fleetStore } from '../store/fleetStore'
-import { CarRecord, BrandRecord, DriverRecord, SensorRecord } from '../types/fleet-management'
+import type { CarRecord, BrandRecord, DriverRecord, SensorRecord } from '../types/fleet-management'
 
 /**
  * Checks if a car is complete according to the rules:

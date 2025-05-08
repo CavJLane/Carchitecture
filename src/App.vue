@@ -1,14 +1,27 @@
 <template>
   <div class="app-container">
-    <FilterBar
-      :fleets="fleetStore.state.fleetRecords"
-      :brands="fleetStore.state.brandRecords"
-      :drivers="fleetStore.state.driverRecords"
-      :filter-fleet="filterFleet"
-      :filter-brand="filterBrand"
-      :filter-driver="filterDriver"
-      @update:filters="onUpdateFilters"
-    />
+    <div class="filter-controls">
+      <label>
+        Filter by:
+        <select v-model="filterType">
+          <option value="">Select Type</option>
+          <option value="brand">Brand</option>
+          <option value="fleet">Fleet</option>
+          <option value="driver">Driver</option>
+        </select>
+      </label>
+      <label v-if="filterType">
+        <span v-if="filterType === 'brand'">Brand:</span>
+        <span v-else-if="filterType === 'fleet'">Fleet:</span>
+        <span v-else-if="filterType === 'driver'">Driver:</span>
+        <select v-model="selectedObjectId">
+          <option value="">Select</option>
+          <option v-for="obj in filterObjects" :key="obj.id" :value="obj.id">
+            {{ obj.label }}
+          </option>
+        </select>
+      </label>
+    </div>
     <div class="car-grid">
       <CarCard
         v-for="car in filteredCars"
@@ -31,28 +44,35 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { fleetStore } from './store/fleetStore'
-import FilterBar from './components/FilterBar.vue'
 import CarCard from './components/CarCard.vue'
 import { isCarComplete, isCarValid } from './composables/useCarChecks'
 import type { CarRecord, BrandRecord, DriverRecord, FleetRecord, SensorRecord } from './types/fleet-management'
 
-const filterFleet = ref<number | ''>('')
-const filterBrand = ref<number | ''>('')
-const filterDriver = ref<number | ''>('')
+const filterType = ref('')
+const selectedObjectId = ref<number | ''>('')
 
-function onUpdateFilters(filters: { fleet: number | ''; brand: number | ''; driver: number | '' }) {
-  filterFleet.value = filters.fleet
-  filterBrand.value = filters.brand
-  filterDriver.value = filters.driver
-}
+const filterObjects = computed(() => {
+  if (filterType.value === 'brand') {
+    return fleetStore.state.brandRecords.map(b => ({ id: b.brand_id, label: `${b.brand_name} [ID: ${b.brand_id}]` }))
+  } else if (filterType.value === 'fleet') {
+    return fleetStore.state.fleetRecords.map(f => ({ id: f.fleet_id, label: `${f.fleet_name} [ID: ${f.fleet_id}]` }))
+  } else if (filterType.value === 'driver') {
+    return fleetStore.state.driverRecords.map(d => ({ id: d.driver_id, label: `${d.driver_name} [ID: ${d.driver_id}]` }))
+  }
+  return []
+})
 
 const filteredCars = computed(() => {
-  return fleetStore.state.carRecords.filter(car => {
-    const fleetMatch = !filterFleet.value || fleetStore.state.fleetLinkRecords.some(link => link.car_id === car.car_id && link.fleet_id === filterFleet.value)
-    const brandMatch = !filterBrand.value || car.brand_id === filterBrand.value
-    const driverMatch = !filterDriver.value || car.driver_id === filterDriver.value
-    return fleetMatch && brandMatch && driverMatch
-  })
+  if (!filterType.value || !selectedObjectId.value) return []
+  if (filterType.value === 'brand') {
+    return fleetStore.state.carRecords.filter(car => car.brand_id === selectedObjectId.value)
+  } else if (filterType.value === 'fleet') {
+    const carIds = fleetStore.state.fleetLinkRecords.filter(link => link.fleet_id === selectedObjectId.value).map(link => link.car_id)
+    return fleetStore.state.carRecords.filter(car => carIds.includes(car.car_id))
+  } else if (filterType.value === 'driver') {
+    return fleetStore.state.carRecords.filter(car => car.driver_id === selectedObjectId.value)
+  }
+  return []
 })
 
 function getBrand(brandId: number): BrandRecord | undefined {
@@ -84,7 +104,6 @@ function getSensorModes(sensorId: number) {
 function openCarDetail(carId: number) {
   // Placeholder for opening the detailed car view overlay
   // To be implemented
-  // e.g. showOverlay.value = true; selectedCarId.value = carId;
 }
 </script>
 
@@ -93,6 +112,12 @@ function openCarDetail(carId: number) {
   max-width: 1200px;
   margin: 0 auto;
   padding: 2rem 1rem;
+}
+.filter-controls {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  margin-bottom: 2rem;
 }
 .car-grid {
   display: flex;
