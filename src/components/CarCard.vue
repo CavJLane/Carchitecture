@@ -24,7 +24,7 @@
       <strong>Sensors:</strong>
       <ul>
         <li v-for="sensor in sensors" :key="sensor.sensor_id">
-          Sensor #{{ sensor.sensor_id }} ({{ sensor.notes.type }})
+          Sensor #{{ sensor.sensor_id }} ({{ (sensor.notes as Record<string, any>)?.type ?? 'unknown' }})
           <ul>
             <li v-for="mode in getSensorModes(sensor.sensor_id)" :key="mode.mode_id">
               Mode: {{ mode.mode_name }} ({{ mode.mode_type }})
@@ -39,7 +39,7 @@
 
 <script setup lang="ts">
 import { computed, defineProps, defineEmits } from 'vue'
-import { CarRecord, BrandRecord, DriverRecord, FleetRecord, SensorRecord } from '../types/fleet-management'
+import type { CarRecord, BrandRecord, DriverRecord, FleetRecord, SensorRecord } from '../types/fleet-management'
 
 const props = defineProps<{
   car: CarRecord
