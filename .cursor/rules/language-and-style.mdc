@@ -1,0 +1,14 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+The program should be written using Typescript & Vue.
+
+In as much as possible, break down repeated logic into functions.
+
+Include as much in-line documentation as possible, especially when functions are created.
+
+In as much as possible, factor out repeated webpage html elements into components. Clearly document those component files with inline comments.
+
+Try to make the webpage design as minimalistic and decluttered as possible while maintaining all necessary components, functions, objects, and functions.

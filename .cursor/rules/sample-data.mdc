@@ -1,0 +1,6 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+Sample Data should be stored in a dynamic pinia store with a state that contains arrays of CarRecords, BrandRecords, FleetRecords, FleetLinkRecords, DriverRecords, SensorRecords, SensorCarLinkRecords, TruckSensorRecords, SedanSensorRecords, TruckSpeedSensorModeRecords, TruckHeatModeRecords, SpeedModeSensorLinkRecords, and HeatModeSensorLinkRecords fitting the descriptions in @data-structure.mdc.

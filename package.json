@@ -1,0 +1,22 @@
+{
+  "name": "vue-typescript-app",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.1",
+    "vue": "^3.4.15"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.0.3",
+    "@vue/tsconfig": "^0.5.1",
+    "typescript": "^5.3.3",
+    "vite": "^6.2.6",
+    "vue-tsc": "^2.2.8"
+  }
+}

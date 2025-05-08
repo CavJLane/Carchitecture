@@ -1,0 +1,121 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Data Structure
+
+- The data is meant to represent a set of cars used by a Car Company. You can call the company "Cameron's Cars".
+- The objects described below are TypeScript objects that are either Classes or Interfaces.
+
+truckASensorModeRecords, truckBModeRecords, aModeSensorLinkRecords, and bModeSensorLinkRecords
+
+class Car {
+    carId: number;
+    carName: string;
+    brandId: number; // This should ALWAYS match the brand_id of the brandRecord passed into the constructor.
+    brandName: string;
+    driverId: number;
+    sensors: Sensor[];
+    constructor(carRecord: carRecord, brandRecord: brandRecord, sensors: Sensor[]) {
+        this.carId = carRecord.car_id;
+        this.carName = carRecord.car_name;
+        this.brandId = carRecord.brand_id;
+        this.brandName = brandRecord.brand_name;
+        this.driverId = carRecord.driver_id;
+        this.sensors = sensors;
+    }
+}
+
+interface carRecord {
+    car_id: number;
+    car_name: string;
+    brand_id: number;
+    driver_id: number;
+}
+
+interface BrandRecord {
+    brand_id: number;
+    brand_name: string;
+    brand_type: string; // Either 'TRUCK' or 'SEDAN'
+}
+
+interface driverRecord {
+    driver_id: number;
+    driver_name: string;
+}
+
+interface FleetRecord {
+    fleet_id: number;
+    fleet_name: string;
+}
+
+interface fleetLinkRecord {
+    car_id: number; // Matches the car_id of the CarRecord to which it is mapped.
+    fleet_id: number; // Matches the fleet_id of the FleetRecord to which it is mapped.
+}
+
+interface sensorCarLinkRecord {
+    id: number;
+    car_id: number;
+    sensor_id: number;
+}
+
+class Sensor {
+    sensor_id: number;
+    notes: {}
+    constructor (sensorRecord: SensorRecord) {
+        this.sensor_id: sensorRecord.sensor_id;
+        this.notes = sensorRecord.notes;
+    }
+}
+
+interface SensorRecord {
+    sensor_id: number;
+    notes: {};
+}
+
+interface TruckSensorRecord {
+    sensor_id: number; // Matches the sensor_id of the SensorRecord to which it is mapped.
+    truck_speed_max: number;
+    truck_speed_min: number;
+}
+
+interface SedanSensorRecord {
+    sensor_id: number; // Matches the sensor_id of the SensorRecord to which it is mapped.
+    sedan_speed_max: number;
+    sedan_speed_min: number;
+}
+
+interface TruckSpeedSensorModeRecord {
+    mode_id: number;
+    mode_name: string;
+    mode_type: string; // Either 'Fast' or 'Slow'
+    average_speed: number;
+}
+
+interface TruckHeatSensorModeRecord {
+    mode_id: number;
+    mode_name: string;
+    mode_type: string; // Either 'Hot' or 'Cold'
+    average_temp: number;
+}
+
+interface TruckSpeedModeSensorLinkRecords {
+    sensor_id: number; // Matches the sensor_id of the SensorRecord to which it is mapped.
+    mode_id: number; // Matches the mode_id of the SensorRecord to which it is mapped.
+}
+
+interface TruckHeatModeSensorLinkRecords {
+    sensor_id: number; // Matches the sensor_id of the SensorRecord to which it is mapped.
+    mode_id: number; // Matches the mode_id of the SensorRecord to which it is mapped.
+}
+
+# Relationship Rules:
+- A 'Car' can only be linked to ONE Brand through the brand_id in CarRecord and BrandRecord.
+- A 'Car' can only be linked to ONE Driver through the driver_id in CarRecord and DriverRecord. A Driver can be mapped to multiple Cars.
+- A 'Car' can be linked to multiple Fleets through fleetLinkRecords. A 'Fleet' can be linked to multiple 'Cars' through fleetLinkRecord.
+- A 'Car' object can contain multiple Sensors in an Array through the 'sensors' attribute.
+- A TruckSensor can be linked to ONE Sensor through the sensor_id in TruckSensorRecord and SensorRecord.
+- A SedanSensor can be linked to ONE Sensor through the sensor_id in SedanSensorRecord and SensorRecord.
+- A 'Sensor' can be linked to multiple modes through either of the LinkRecords.
