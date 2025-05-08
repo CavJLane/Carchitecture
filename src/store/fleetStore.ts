@@ -86,15 +86,14 @@ export const fleetStore = {
     return [...truckSpeedModes, ...truckHeatModes]
   },
 
-  // Check if a car is 'complete' (has a brand, driver, at least one fleet, and at least one sensor)
+  // Check if a car is 'complete' (has a brand, driver, and at least one sensor)
   isCarComplete: (carId: number) => {
     const car = state.carRecords.find(c => c.car_id === carId)
     if (!car) return false
     const hasBrand = state.brandRecords.some(b => b.brand_id === car.brand_id)
     const hasDriver = state.driverRecords.some(d => d.driver_id === car.driver_id)
-    const hasFleet = state.fleetLinkRecords.some(link => link.car_id === carId)
     const hasSensor = state.sensorCarLinkRecords.some(link => link.car_id === carId)
-    return hasBrand && hasDriver && hasFleet && hasSensor
+    return hasBrand && hasDriver && hasSensor
   },
 
   // Mutations
