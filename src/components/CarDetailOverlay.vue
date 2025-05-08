@@ -8,6 +8,7 @@
         <SectionPanel
           title="Brand"
           :objects="brand ? [brand] : []"
+          :available-objects="availableBrands"
           type="brand"
           :completeness="completeness"
           :validity="validity"
@@ -16,6 +17,7 @@
         <SectionPanel
           title="Driver"
           :objects="driver ? [driver] : []"
+          :available-objects="availableDrivers"
           type="driver"
           :completeness="completeness"
           :validity="validity"
@@ -24,6 +26,7 @@
         <SectionPanel
           title="Fleets"
           :objects="fleets"
+          :available-objects="availableFleets"
           type="fleet"
           :completeness="completeness"
           :validity="validity"
@@ -32,6 +35,7 @@
         <SectionPanel
           title="Sensors"
           :objects="sensors"
+          :available-objects="availableSensors"
           type="sensor"
           :completeness="completeness"
           :validity="validity"
@@ -40,6 +44,7 @@
         <SectionPanel
           title="Modes"
           :objects="modes"
+          :available-objects="availableModes"
           type="mode"
           :completeness="completeness"
           :validity="validity"
@@ -52,8 +57,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, defineProps, defineEmits } from 'vue';
+import { ref, defineProps, defineEmits, computed } from 'vue';
 import type { CarRecord, BrandRecord, DriverRecord, FleetRecord, SensorRecord } from '../types/fleet-management';
+import { fleetStore } from '../store/fleetStore';
 import IssueList from '../components/IssueList.vue'
 import SectionPanel from '../components/SectionPanel.vue'
 
@@ -74,6 +80,31 @@ const advancedView = ref(false)
 function toggleAdvanced() {
   advancedView.value = !advancedView.value
 }
+
+// Available objects for each section
+const availableBrands = computed(() => {
+  return fleetStore.state.brandRecords.filter(b => !props.brand || b.brand_id !== props.brand.brand_id)
+})
+const availableDrivers = computed(() => {
+  return fleetStore.state.driverRecords.filter(d => !props.driver || d.driver_id !== props.driver.driver_id)
+})
+const availableFleets = computed(() => {
+  const linkedIds = props.fleets.map(f => f.fleet_id)
+  return fleetStore.state.fleetRecords.filter(f => !linkedIds.includes(f.fleet_id))
+})
+const availableSensors = computed(() => {
+  const linkedIds = props.sensors.map(s => s.sensor_id)
+  return fleetStore.state.sensorRecords.filter(s => !linkedIds.includes(s.sensor_id))
+})
+const availableModes = computed(() => {
+  // Modes not already linked to any of the car's sensors
+  const linkedModeIds = props.modes.map((m: any) => m.mode_id)
+  const allModes = [
+    ...fleetStore.state.truckSpeedSensorModeRecords,
+    ...fleetStore.state.truckHeatSensorModeRecords
+  ]
+  return allModes.filter(m => !linkedModeIds.includes(m.mode_id))
+})
 </script>
 
 <style scoped>
