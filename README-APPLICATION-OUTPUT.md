@@ -41,7 +41,8 @@ src/
 - [x] Proposed new directory/component structure
 - [x] Implement CarCard.vue
 - [x] Implement completeness/validity checks composable
-- [ ] Implement FilterBar.vue and filtering logic
+- [x] Implement FilterBar.vue and filtering logic
+- [x] Integrate FilterBar.vue and CarCard.vue into App.vue with filtering logic
 - [ ] Implement CarDetailOverlay.vue with all required features
 - [ ] Implement SectionPanel.vue, AddObjectDropdown.vue, IssueList.vue
 - [ ] Implement advanced view and add/remove/save logic
@@ -52,8 +53,9 @@ src/
 ### Log
 - **CarCard.vue**: Created a minimal, well-documented card component to display all mapped information for a Car, with border color indicating completeness/validity. Emits an event to open the detailed car view.
 - **useCarChecks.ts**: Added a composable with functions to check completeness and validity for a Car, following all outlined rules.
+- **FilterBar.vue**: Added a filter bar component with dropdowns for Fleet, Brand, and Driver, emitting filter changes to parent.
+- **App.vue**: Integrated FilterBar and CarCard, implemented filtering logic, and display of all mapped car information as cards.
 
 **Next steps:**
-- Implement FilterBar.vue and filtering logic in App.vue
 - Begin work on CarDetailOverlay.vue and supporting reusable components
 - Continue updating this log as progress continues. 
