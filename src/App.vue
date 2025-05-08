@@ -37,7 +37,19 @@
         @open-detail="openCarDetail"
       />
     </div>
-    <!-- Detailed car view overlay will be implemented here -->
+    <CarDetailOverlay
+      v-if="showOverlay && selectedCar"
+      :car="selectedCar"
+      :brand="getBrand(selectedCar.brand_id)"
+      :driver="getDriver(selectedCar.driver_id)"
+      :fleets="getCarFleets(selectedCar.car_id)"
+      :sensors="getCarSensors(selectedCar.car_id)"
+      :modes="getCarModes(selectedCar.car_id)"
+      :completeness="isCarComplete(selectedCar)"
+      :validity="isCarValid(selectedCar)"
+      :issues="getCarIssues(selectedCar)"
+      @close="closeOverlay"
+    />
   </div>
 </template>
 
@@ -45,11 +57,14 @@
 import { ref, computed } from 'vue'
 import { fleetStore } from './store/fleetStore'
 import CarCard from './components/CarCard.vue'
-import { isCarComplete, isCarValid } from './composables/useCarChecks'
+import CarDetailOverlay from './components/CarDetailOverlay.vue'
+import { isCarComplete, isCarValid, getCarIssues } from './composables/useCarChecks'
 import type { CarRecord, BrandRecord, DriverRecord, FleetRecord, SensorRecord } from './types/fleet-management'
 
 const filterType = ref('')
 const selectedObjectId = ref<number | ''>('')
+const showOverlay = ref(false)
+const selectedCar = ref<CarRecord | null>(null)
 
 const filterObjects = computed(() => {
   if (filterType.value === 'brand') {
@@ -101,9 +116,20 @@ function getSensorModes(sensorId: number) {
   const heatModes = heatLinks.map(l => fleetStore.state.truckHeatSensorModeRecords.find(m => m.mode_id === l.mode_id)).filter(Boolean)
   return [...speedModes, ...heatModes]
 }
+function getCarModes(carId: number) {
+  // Get all modes for all sensors of this car
+  const sensors = getCarSensors(carId)
+  return sensors.flatMap(sensor => getSensorModes(sensor.sensor_id))
+}
 function openCarDetail(carId: number) {
-  // Placeholder for opening the detailed car view overlay
-  // To be implemented
+  console.log('Opening detail for car:', carId)
+  const car = fleetStore.state.carRecords.find(c => c.car_id === carId) || null
+  selectedCar.value = car
+  showOverlay.value = !!car
+}
+function closeOverlay() {
+  showOverlay.value = false
+  selectedCar.value = null
 }
 </script>
 
