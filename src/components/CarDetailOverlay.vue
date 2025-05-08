@@ -62,6 +62,7 @@ import type { CarRecord, BrandRecord, DriverRecord, FleetRecord, SensorRecord } 
 import { fleetStore } from '../store/fleetStore';
 import IssueList from '../components/IssueList.vue'
 import SectionPanel from '../components/SectionPanel.vue'
+import { validateCarWithYup } from '../composables/useCarChecks'
 
 const props = defineProps<{
   car: CarRecord
@@ -72,7 +73,6 @@ const props = defineProps<{
   modes: any[]
   completeness: boolean
   validity: boolean
-  issues: string[]
 }>()
 
 const emit = defineEmits(['close'])
@@ -105,6 +105,9 @@ const availableModes = computed(() => {
   ]
   return allModes.filter(m => !linkedModeIds.includes(m.mode_id))
 })
+
+// Compute issues using validateCarWithYup
+const issues = computed(() => validateCarWithYup(props.car))
 </script>
 
 <style scoped>

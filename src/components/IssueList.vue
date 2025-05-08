@@ -2,7 +2,9 @@
   <div class="issue-list">
     <h3>Issues</h3>
     <ul v-if="issues.length">
-      <li v-for="(issue, idx) in issues" :key="idx" class="issue-item">{{ issue }}</li>
+      <li v-for="(issue, idx) in issues" :key="idx" class="issue-item">
+        <strong>{{ issue.objectType }} [ID: {{ issue.objectId }}]:</strong> {{ issue.message }}
+      </li>
     </ul>
     <div v-else class="no-issues">All completeness and validity checks passed.</div>
   </div>
@@ -12,7 +14,7 @@
 import { defineProps } from 'vue'
 
 const props = defineProps<{
-  issues: string[]
+  issues: { objectType: string; objectId: number; message: string }[]
 }>()
 </script>
 
